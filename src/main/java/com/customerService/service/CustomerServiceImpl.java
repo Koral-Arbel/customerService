@@ -1,6 +1,7 @@
 package com.customerService.service;
 
 import com.customerService.model.Customer;
+import com.customerService.model.CustomerStatus;
 import com.customerService.repository.CustomerRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,18 +20,35 @@ public class CustomerServiceImpl implements CustomerService{
     ObjectMapper objectMapper;
 
     @Override
-    public Long createCustomer(Customer customer){
-        return customerRepository.createCustomer(customer);
+    public Long createCustomer(Customer customer) throws Exception {
+        if(customer.getStatus() == CustomerStatus.EMPLOYEE){
+            List<Customer> employee = customerRepository.getAllCustomersByStatus(CustomerStatus.EMPLOYEE);
+            if(employee.size() < 10 ) {
+                return customerRepository.createCustomer(customer);
+            } else {
+                throw new Exception("Can't create new customer with EMPLOYEE status, Out of limit");
+            }
+        } else {
+            return customerRepository.createCustomer(customer);
+        }
     }
-
 
     @Override
     public void updateCustomerById(Long customerId, Customer customer) throws Exception {
-        Customer existingCustomer =  customerRepository.getCustomerById(customerId);
-        if(existingCustomer != null){
-            customerRepository.updateCustomerById(customerId, customer);
+        if(customer.getStatus() == CustomerStatus.EMPLOYEE){
+            Customer existingCustomer = customerRepository.getCustomerById(customerId);
+            if(existingCustomer.getStatus() != CustomerStatus.EMPLOYEE){
+                List<Customer> employee = customerRepository.getAllCustomersByStatus(CustomerStatus.EMPLOYEE);
+                if(employee.size() < 10){
+                    customerRepository.updateCustomerById(customerId, customer);
+                } else {
+                    throw new Exception("Can't update customer status to EMPLOYEE, Out of limit");
+                }
+            } else {
+                customerRepository.updateCustomerById(customerId, customer);
+            }
         } else {
-            throw new Exception("The customer id: " + customerId + " is not existing, so we can't delete it");
+            customerRepository.updateCustomerById(customerId, customer);
         }
     }
 

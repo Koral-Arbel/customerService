@@ -1,6 +1,7 @@
 package com.customerService.repository;
 
 import com.customerService.model.Customer;
+import com.customerService.model.CustomerStatus;
 import com.customerService.repository.mapper.CustomerMapper;
 import com.customerService.repository.redis.CacheRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,8 +29,8 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     public Long createCustomer(Customer customer) {
-        String sql = "INSERT INTO " + CUSTOMER_TABLE_NAME + " (first_name, last_name, email, age, address, joining_date) VALUES (?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getAge(), customer.getAddress(), customer.getJoiningDate());
+        String sql = "INSERT INTO " + CUSTOMER_TABLE_NAME + " (first_name, last_name, email, age, address, joining_date, status ) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getAge(), customer.getAddress(), customer.getJoiningDate(), customer.getStatus().name());
         return jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID();", Long.class);
     }
 
@@ -69,8 +70,18 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     @Override
     public List<Customer> getAllCustomers() {
         String sql = "SELECT * FROM " + CUSTOMER_TABLE_NAME;
-        try {
+        try{
             return jdbcTemplate.query(sql, new CustomerMapper());
+        } catch (EmptyResultDataAccessException error){
+            return null;
+        }
+    }
+
+    @Override
+    public List<Customer> getAllCustomers(String firstName) {
+        String sql = "SELECT * FROM " + CUSTOMER_TABLE_NAME;
+        try {
+            return jdbcTemplate.query(sql, new CustomerMapper(), firstName);
         } catch (EmptyResultDataAccessException error) {
             return null;
         }
@@ -81,6 +92,16 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         String sql = "SELECT c.id FROM " + CUSTOMER_TABLE_NAME + " AS c WHERE c.first_name = ?";
         try {
             return jdbcTemplate.queryForList(sql, Long.class, firstName);
+        } catch (EmptyResultDataAccessException error) {
+            return null;
+        }
+    }
+
+    @Override
+    public List<Customer> getAllCustomersByStatus(CustomerStatus status) {
+        String sql = "SELECT * FROM " + CUSTOMER_TABLE_NAME + " AS C WHERE C.status = ?";
+        try {
+            return jdbcTemplate.query(sql, new CustomerMapper(), status.name());
         } catch (EmptyResultDataAccessException error) {
             return null;
         }

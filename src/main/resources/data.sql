@@ -8,5 +8,6 @@ CREATE TABLE customer (
         age int(120) NOT NULL DEFAULT '',
         address varchar(300) NOT NULL DEFAULT '',
         joining_date TIMESTAMP,
+        status varchar(300) NOT NULL DEFAULT 'GUEST',
         PRIMARY KEY (id)
 );

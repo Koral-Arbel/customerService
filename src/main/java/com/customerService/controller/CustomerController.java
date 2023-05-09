@@ -22,9 +22,9 @@ public class CustomerController {
     private InternalPollService internalPollService;
 
     @PostMapping(value = "/customer/create")
-    public String createCustomer(@RequestBody Customer customer)  {
-        customerService.createCustomer(customer);
-        return "Create new customer";
+    public Long createCustomer(@RequestBody Customer customer) throws Exception {
+        return customerService.createCustomer(customer);
+
     }
 
     @PutMapping(value = "/customer/{customerId}/update")

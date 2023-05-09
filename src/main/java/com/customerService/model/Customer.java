@@ -11,10 +11,10 @@ public class Customer {
     private int age;
     private String address;
     private Date joiningDate;
+    private CustomerStatus status;
 
 
-
-    public Customer(Long id, String firstName, String lastName, String email, int age, String address, Date joiningDate) {
+    public Customer(Long id, String firstName, String lastName, String email, int age, String address, Date joiningDate, CustomerStatus status) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -22,6 +22,7 @@ public class Customer {
         this.age = age;
         this.address = address;
         this.joiningDate = joiningDate;
+        this.status = status;
     }
 
     public Long getId() {
@@ -52,6 +53,9 @@ public class Customer {
         return joiningDate;
     }
 
+    public CustomerStatus getStatus() {
+        return status;
+    }
 
     public void setId(Long id) {
         this.id = id;
@@ -79,5 +83,9 @@ public class Customer {
 
     public void setJoiningDate(Date joiningDate) {
         this.joiningDate = joiningDate;
+    }
+
+    public void setStatus(CustomerStatus status) {
+        this.status = status;
     }
 }
