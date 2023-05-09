@@ -2,14 +2,15 @@ package com.customerService.controller;
 
 
 import com.customerService.model.Customer;
-import com.customerService.model.InternalCustomer;
 import com.customerService.service.CustomerService;
-import com.customerService.service.InternalCustomerService;
+import com.customerService.service.InternalPollService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+//@RequestMapping("/customer")
 
 @RestController
 public class CustomerController {
@@ -18,11 +19,12 @@ public class CustomerController {
     private CustomerService customerService;
 
     @Autowired
-    private InternalCustomerService internalCustomerService;
+    private InternalPollService internalPollService;
 
     @PostMapping(value = "/customer/create")
-    public Long createCustomer(@RequestBody Customer customer) throws Exception {
-        return customerService.createCustomer(customer);
+    public String createCustomer(@RequestBody Customer customer)  {
+        customerService.createCustomer(customer);
+        return "Create new customer";
     }
 
     @PutMapping(value = "/customer/{customerId}/update")
@@ -42,23 +44,18 @@ public class CustomerController {
     }
 
     @GetMapping(value = "/customer/{firstName}/all")
-    public List<Customer> getCustomersByFirstName(@PathVariable String firstName){
+    public List<Customer> getCustomersByFirstName(@PathVariable String firstName) {
         return customerService.getCustomersByFirstName(firstName);
     }
 
     @GetMapping(value = "/customer/all")
-    public List<Customer> getAllCustomers(){
+    public List<Customer> getAllCustomers() {
         return customerService.getAllCustomers();
     }
 
-    @GetMapping(value = "/customerId/{firstName}/all")
-    public List<Long> getCustomerIdsByFirstName(@PathVariable String firstName){
+    @GetMapping(value = "/id/{firstName}/all")
+    public List<Long> getCustomerIdsByFirstName(@PathVariable String firstName) {
         return customerService.getCustomerIdsByFirstName(firstName);
     }
 
-    @GetMapping(value = "internalCustomer/{customerId}")
-    public InternalCustomer getInternalCustomerById(@PathVariable Long customerId){
-        return internalCustomerService.getInternalCustomerById(customerId);
-    }
 }
-
