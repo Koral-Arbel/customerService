@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8090
 
 spring:
   datasource:
@@ -15,7 +15,8 @@ spring:
 
 externalApi:
   pollService:
-    url: localhost:8082
+    url: localhost:8080
+
 
 redis:
   host: localhost
